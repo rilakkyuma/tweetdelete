@@ -78,7 +78,7 @@ Once the keys are set up, authenticate them.
 ```
 $ auth ↵
 authenticating
-authenticated as @rilakyuuma
+authenticated as @<your-handle>
 ```
 From here, you can choose to list out your tweets. You have many options on how to do so, including listing by month and year, and whether it was a retweet or in respnse to someone. For example, to list all tweets from February of 2014, do:
 ```
