@@ -19,4 +19,84 @@ At this point you should have everything you need to run the prompt.
 
 ## how-to-use
 
-Navigate to the directory containing the tweetdelete executable and run it.
+Navigate to the directory containing the tweetdelete executable and run it. You should be greeted with this message:
+```
+welcome to tweetdelete, a command line tool that lets you find and mass delete even the oldest tweets from your account. to start, input '$ help' to the console
+$ 
+```
+As the opening prompt states, inputting ```$ help``` will present you with a list of options. Here are some of them.
+```
+$ setpath
+	-[path]	set path of tweet archive
+$ curpath
+	outputs the current path of the tweet archive
+$ readcsv
+	read in the csv file at the given path
+$ auth
+	authenticate using supplied keys (see $ edit for details)
+$ edit
+	-ck		edit consumer_key
+		-[k] - consumer_key value
+	-cs		edit consumer_secret
+		-[k] - consumer_secret value
+	-ak		edit access_key
+		-[k] - access_key value
+	-as		edit access_secret
+		-[k] - access_secret value
+```
+The first thing we wil want to do here is configure our ```archive_path``` to point to wherever our .csv is stored so that we can load it.
+```
+$ setpath /path/to/tweets.csv ↵
+set path to archive
+```
+Now that we have our ```archive_path``` set up, we simply read in the .csv file using
+```
+$ readcsv
+```
+If all went well, the following will have been outputted to the console:
+```
+$ readcsv ↵
+csv successfully read
+filled in tweet ids
+filled in tweet->id and id->tweet map
+```
+Next we will want to set up our authentication keys. The commands list tells us that ```edit -ck``` will help us set up our first key. So we input as follows:
+```
+$ edit -ck <key> ↵
+changed consumer_key to <key>
+```
+Repeat this for the remaining three keys.
+```
+$ edit -cs <key> ↵
+changed consumer_secret to <key>
+$ edit -ak <key> ↵
+changed access_key to <key>
+$ edit -as <key> ↵
+changed access_secret to <key>
+```
+Once the keys are set up, authenticate them.
+```
+$ auth ↵
+authenticating
+authenticated as @rilakyuuma
+```
+From here, you can choose to list out your tweets. You have many options on how to do so, including listing by month and year, and whether it was a retweet or in respnse to someone. For example, to list all tweets from February of 2014, do:
+```
+$ list -ym 2014-02
+```
+which will output all the tweets in ```tweetid, tweetdate, tweetcontents``` format, like so:
+```
+$ list -ym 2014-02 ↵
+437767003848572928 2014-02-24 i'm an example tweet!
+435908529396785152 2014-02-24 i'm another example tweet!
+```
+You get the point. But if you simply want to list all of the tweets, do:
+```
+$ list -a
+```
+There's more for listing methods, simply call ```$ help``` for a full list. We will now move on to marking tweets for deletion.
+
+To do that, use the ```$ mark``` function and add extra arguments to customize the selection. Many of the arguments used in listing tweets will also work for marking them. Arguments such as ```-yw```, ```-rt```, and ```-h``` are common among marking and listing. Note that as a safeguard, you cannot use the ```-a``` argument when marking tweets for deletion. When you do mark tweets for deletion, such as with
+```
+$ mark -rt 
+```
