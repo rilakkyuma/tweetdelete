@@ -100,9 +100,19 @@ To do that, use the ```$ mark``` function and add extra arguments to customize t
 ```
 $ mark -rt GuyFieri
 ```
+which should output something like
+```
+$ mark -rt GuyFieri ↵
+marked 4 tweets
+```
 This will mark all retweets of @GuyFieri for deletion. There are many other options as well. But if you want to preserve a tweet that has been marked (see all marked tweets with ```$ list -m```), then simply ```clear``` it from the list using ```$ clear -i <tweetid>```. You can also clear the list entirely (this will **NOT** delete them) using ```$ clear -a```.
 
-If you are satisfied with what is marked for deletion and want to proceed with deleting the tweets off your account, simply input ```$ nuke```. This will begin going through all the marked tweets and remove them from your account. This process may take a while depending on how many tweets you have marked.
+If you are satisfied with what is marked for deletion and want to proceed with deleting the tweets off your account, simply input ```$ nuke```. This will begin going through all the marked tweets and remove them from your account. This process may take a while depending on how many tweets you have marked. If done properly, then ```$ nuke``` should output
+```
+$ nuke ↵
+4 tweets deleted
+list of marked tweets cleared
+```
 
 ## license
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/rilakkyuma/tweetdelete/blob/master/LICENSE) file for details
