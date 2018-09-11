@@ -98,5 +98,11 @@ There's more for listing methods, simply call ```$ help``` for a full list. We w
 
 To do that, use the ```$ mark``` function and add extra arguments to customize the selection. Many of the arguments used in listing tweets will also work for marking them. Arguments such as ```-yw```, ```-rt```, and ```-h``` are common among marking and listing. Note that as a safeguard, you cannot use the ```-a``` argument when marking tweets for deletion. When you do mark tweets for deletion, such as with
 ```
-$ mark -rt 
+$ mark -rt GuyFieri
 ```
+This will mark all retweets of @GuyFieri for deletion. There are many other options as well. But if you want to preserve a tweet that has been marked (see all marked tweets with ```$ list -m```), then simply ```clear``` it from the list using ```$ clear -i <tweetid>```. You can also clear the list entirely (this will **NOT** delete them) using ```$ clear -a```.
+
+If you are satisfied with what is marked for deletion and want to proceed with deleting the tweets off your account, simply input ```$ nuke```. This will begin going through all the marked tweets and remove them from your account. This process may take a while depending on how many tweets you have marked.
+
+## license
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/rilakkyuma/tweetdelete/blob/master/LICENSE) file for details
