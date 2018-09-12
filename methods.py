@@ -1,7 +1,7 @@
 import csv
 import codecs
 
-import tweepy #external
+import tweepy # external
 
 # keep track of the csv file in 2d list format
 tweets = []
@@ -28,24 +28,32 @@ archive_path = ''
 # authenticated boolean set to False by default
 authenticated = False
 
+# checks if the .csv file has already been read
+csv_already_read = False
+
 
 # read in the csv file into a multidimensional list using the global archive_path string
 def read_csv():
-    global tweets
-    # reads a CSV file into a list of lists
-    with codecs.open(archive_path, encoding='utf-8') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        tweets = []
-        for line in reader:
-            row_data = []
-            for element in line:
-                row_data.append(element)
-            if row_data != []:
-                tweets.append(row_data)
-    tweets.pop(0)
-    print('csv successfully read')
-    fill_in_tweet_ids()
-    fill_in_maps()
+    global csv_already_read
+    if not csv_already_read:
+        global tweets
+        # reads a CSV file into a list of lists
+        with codecs.open(archive_path, encoding='utf-8') as csvfile:
+            reader = csv.reader(csvfile, delimiter=',')
+            tweets = []
+            for line in reader:
+                row_data = []
+                for element in line:
+                    row_data.append(element)
+                if row_data != []:
+                    tweets.append(row_data)
+        tweets.pop(0)
+        print('csv successfully read')
+        fill_in_tweet_ids()
+        fill_in_maps()
+        csv_already_read = True
+    else:
+        print('a .csv file has already been loaded')
 
 
 # methods to be automatically called by readcsb()
@@ -58,17 +66,19 @@ def fill_in_maps():
 
 
 # searches through every tweet that includes a certain hashtag and marks it for deletion
+# this will list tweets from the oldest to the newest
 def list_by_hashtag(hashtag):
     # modify hashtag string to include the '#'
     hashtag = '#' + hashtag
-    for tweet in tweets:
+    for tweet in reversed(tweets):
         if hashtag in tweet[5]:
             print(tweet[0] + ' ' + tweet[3][0:10] + ' ' + tweet[5])
 
 
 # lists every tweet in the account that was a Retweet of someone else's tweet
+# this will list tweets from the oldest to the newest
 def list_retweets(userid=''):
-    for tweet in tweets:
+    for tweet in reversed(tweets):
         if userid == '':
             if tweet[5][0:3] == 'RT ':
                 print(tweet[0] + ' ' + tweet[3][0:10] + ' ' + tweet[5])
@@ -79,16 +89,18 @@ def list_retweets(userid=''):
 
 
 # lists every tweet in the account if it contains a certain keyword
+# this will list tweets from the oldest to the newest
 def list_by_keyword(keyword):
-    for tweet in tweets:
+    for tweet in reversed(tweets):
         if keyword in tweet[5]:
             print(tweet[0] + ' ' + tweet[3][0:10] + ' ' + tweet[5])
 
 
 # searches through every tweet in the account that was a reply to another user
+# this will list tweets from the oldest to the newest
 def list_replies(userid=''):
     global marked_tweets
-    for tweet in tweets:
+    for tweet in reversed(tweets):
         if userid == '':
             if tweet[5][0] == '@':
                 print(tweet[0] + ' ' + tweet[3][0:10] + ' ' + tweet[5])
@@ -98,28 +110,31 @@ def list_replies(userid=''):
                 print(tweet[0] + ' ' + tweet[3][0:10] + ' ' + tweet[5])
 
 # lists every tweet that is in the year-months specified
+# this will list tweets from the oldest to the newest
 def list_by_yr_month(month_list):
-    for tweet in tweets:
+    for tweet in reversed(tweets):
         if tweet[3][0:7] in month_list:
             print(tweet[0] + ' ' + tweet[3][0:10] + ' ' + tweet[5])
 
 
 # lists all tweets in the archive in "tweetid tweetdate tweetcontents" format
+# this will list tweets from the oldest to the newest
 def list_all():
     if not tweets:
         print('list of tweets is empty. try reading in another csv file')
     else:
-        for tweet in tweets:
+        for tweet in reversed(tweets):
             print(tweet[0] + ' ' + tweet[3][0:19] + ' ' + tweet[5])
 
 
 # searches through every tweet that includes a certain keyword and marks it
+# this will mark tweets from the oldest to the newest so they are deleted in such order
 def mark_by_keyword(keyword):
     global marked_tweets
     # check every tweet in the archive and if it includes the specified hashtag, add it to the list
     # of tweets to delete
     count = 0
-    for tweet in tweets:
+    for tweet in reversed(tweets):
         if keyword in tweet[5] and tweet[0] not in marked_tweets:
             marked_tweets.append(tweet[0])
             count += 1
@@ -127,10 +142,11 @@ def mark_by_keyword(keyword):
 
 
 # marks every tweet in the account that was a Retweet of someone else's tweet
+# this will mark tweets from the oldest to the newest so they are deleted in such order
 def mark_retweets(userid=''):
     global marked_tweets
     count = 0
-    for tweet in tweets:
+    for tweet in reversed(tweets):
         if userid == '':
             if tweet[5][0:3] == 'RT ' and tweet[0] not in marked_tweets:
                 marked_tweets.append(tweet[0])
@@ -144,6 +160,7 @@ def mark_retweets(userid=''):
 
 
 # searches through every tweet that includes a certain hashtag and marks it for deletion
+# this will mark tweets from the oldest to the newest so they are deleted in such order
 def mark_by_hashtag(hashtag):
     # modify hashtag string to include the '#'
     hashtag = '#' + hashtag
@@ -151,7 +168,7 @@ def mark_by_hashtag(hashtag):
     count = 0
     # check every tweet in the archive and if it includes the specified hashtag, add it to the list
     # of tweets to delete
-    for tweet in tweets:
+    for tweet in reversed(tweets):
         if hashtag in tweet[5] and tweet[0] not in marked_tweets:
             marked_tweets.append(tweet[0])
             count += 1
@@ -159,11 +176,12 @@ def mark_by_hashtag(hashtag):
 
 
 # marks replies. if no argument is passed, then all replies are marked. otherwise,
-# specify a user to mark replies froma
+# specify a user to mark replies from
+# this will mark tweets from the oldest to the newest so they are deleted in such order
 def mark_replies(userid=''):
     global marked_tweets
     count = 0
-    for tweet in tweets:
+    for tweet in reversed(tweets):
         if userid == '':
             if tweet[5][0] == '@' and tweet[0] not in marked_tweets:
                 marked_tweets.append(tweet[5])
@@ -178,10 +196,11 @@ def mark_replies(userid=''):
 
 # searches through every tweet in the account according to its year and month of publication and adds it to the list
 # of tweets to delete
+# this will mark tweets from the oldest to the newest so they are deleted in such order
 def mark_by_yr_month(month_list):
     global marked_tweets
     count = 0
-    for tweet in tweets:
+    for tweet in reversed(tweets):
         if tweet[3][0:7] in month_list and tweet[0] not in marked_tweets:
             marked_tweets.append(tweet[0])
             count += 1
@@ -197,6 +216,19 @@ def mark_tweet_by_id(id):
         print('marked tweet ' + str(id))
     else:
         print('tweet id ' + str(id) + ' not valid. make sure you are the owner of the tweet/retweet and that it is not already marked')
+
+
+# deletes every single tweet on the account. will prompt the user for confirmation before proceeding
+# this will delete tweets from the oldest to the newest
+def delete_all():
+    global marked_tweets
+    totaltweetscount = len(all_tweet_ids)
+    if totaltweetscount == 0:
+        print('there are no tweets available to delete. try reading in a .csv file')
+    else:
+        for tweet in reversed(tweets):
+            marked_tweets.append(tweet[0])
+        delete_markeds()
 
 
 # deletes every single marked tweet. however this requires authentication first
