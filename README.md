@@ -100,7 +100,7 @@ $ list -a
 ```
 There's more for listing methods, simply call ```$ help``` for a full list. We will now move on to marking tweets for deletion.
 
-To do that, use the ```$ mark``` function and add extra arguments to customize the selection. Many of the arguments used in listing tweets will also work for marking them. Arguments such as ```-yw```, ```-rt```, and ```-h``` are common among marking and listing. Note that as a safeguard, you cannot use the ```-a``` argument when marking tweets for deletion. When you do mark tweets for deletion, such as with
+To do that, use the ```$ mark``` function and add extra arguments to customize the selection. Many of the arguments used in listing tweets will also work for marking them. Arguments such as ```-yw```, ```-rt```, and ```-h``` are common among marking and listing.
 ```
 $ mark -rt GuyFieri
 ```
@@ -111,12 +111,28 @@ marked 4 tweets
 ```
 This will mark all retweets of @GuyFieri for deletion. There are many other options as well. But if you want to preserve a tweet that has been marked (see all marked tweets with ```$ list -m```), then simply ```clear``` it from the list using ```$ clear -i <tweetid>```. You can also clear the list entirely (this will **NOT** delete them) using ```$ clear -a```.
 
-If you are satisfied with what is marked for deletion and want to proceed with deleting the tweets off your account, simply input ```$ nuke```. This will begin going through all the marked tweets and remove them from your account. This process may take a while depending on how many tweets you have marked. If done properly, then ```$ nuke``` should output
+If you are satisfied with what is marked for deletion and want to proceed with deleting the tweets off your account, simply input ```$ nuke -m```. This will begin going through all the marked tweets and removing them from your account in order of oldest to newest. This process may take a while depending on how many tweets you have marked. If done properly, then ```$ nuke -m``` should output
 ```
-$ nuke ↵
+$ nuke -m ↵
 4 tweets deleted
 list of marked tweets cleared
 ```
-
+There is also an option to nuke all of your tweets entirely. Input ```$ nuke``` with the ```-a``` flag, like such
+```
+$ nuke -a
+```
+You will then be prompted to confirm your decision (this is the fate of all your tweets we're talking about here!)
+```
+$ nuke -a ↵
+WARNING: THIS WILL DELETE ALL THE TWEETS ON THE ACCOUNT. ARE YOU SURE YOU WANT TO CONTINUE? [y/n] 
+```
+Once you input ```y```, the program will then go through all of your tweets and begin clearing out your account. Done successfully should output
+```
+$ nuke -a ↵
+WARNING: THIS WILL DELETE ALL THE TWEETS ON THE ACCOUNT. ARE YOU SURE YOU WANT TO CONTINUE? [y/n] y ↵
+(deletion text here...)
+23990 tweets deleted
+list of marked tweets cleared
+```
 ## license
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/rilakkyuma/tweetdelete/blob/master/LICENSE) file for details
