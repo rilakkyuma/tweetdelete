@@ -6,7 +6,7 @@ A command line tool that lets the user review and remove any of the tweets they'
 If you want to compile this code yourself, know that this build uses ```python 3.6``` and not ```python 3.7```, due to certain libraries not being supported currently on ```3.7```.
 
 ## external-libraries
-The libraries used in this project are the tweepy (for API accesses) and pyinstaller (for building) library, which can be installed using pip using
+The libraries used in this project are the tweepy (for API accesses) and pyinstaller (for building) library, which can be installed with pip using
 ```
 pip install tweepy
 pip install pyinstaller
