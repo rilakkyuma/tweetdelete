@@ -1,6 +1,6 @@
 import cmd
 from sys import exit
-import methods # the main() in methods will be run before this module's main()
+import methods
 
 def print_welcome():
     print('welcome to tweetdelete, a command line tool that lets you find and mass delete even the oldest tweets from your account. to start, input \'$ help\' to the console')
@@ -25,7 +25,9 @@ def print_help():
     print('\t-a\t\tclear the entire list of marked tweets WITHOUT deletion')
     print('\t-i\t\tclear a specific tweet from the marked list by its tweet id')
     print('\t\t-[a] - tweetid')
-    print('$ nuke\n\tdelete all tweets that are marked')
+    print('$ nuke')
+    print('\t-m\t\tnuke all tweets that are marked for deletion')
+    print('\t-a\t\tnuke ALL tweets from the account regardless of whether marked or not. confirmation is required for this option')
     print('$ mark')
     print('\t-i\t\tmark a tweet with its id')
     print('\t\t[id] - tweet id')
@@ -169,8 +171,21 @@ class main(cmd.Cmd):
         else:
             print('specify an option')
 
-    def do_nuke(self, _arg):
-        methods.delete_markeds()
+    def do_nuke(self, args):
+        args_a = args.split(' ')
+        if args_a[0] == '-m':
+            methods.delete_markeds()
+        elif args_a[0] == '-a':
+            while True:
+                n = input('WARNING: THIS WILL DELETE ALL THE TWEETS ON THE ACCOUNT. ARE YOU SURE YOU WANT TO CONTINUE? [y/n] ')
+                if n == 'y':
+                    methods.delete_all()
+                    break
+                else:
+                    print('selection cancelled')
+                    break
+        else:
+            print('specify a valid option')
 
     def do_curpath(self, _arg):
         methods.output_archive_path()
@@ -215,11 +230,7 @@ class main(cmd.Cmd):
     def do_count(self, arg):
         methods.count_markeds()
 
-    def do_a(self, _arg):
-        methods.showinfo()
-
     def do_exit(self, _arg):
         exit()
-
 
 main().cmdloop()
