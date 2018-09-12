@@ -181,9 +181,11 @@ class main(cmd.Cmd):
                 if n == 'y':
                     methods.delete_all()
                     break
-                else:
+                elif n == 'n':
                     print('selection cancelled')
                     break
+                else:
+                    print('must specify [y/n]')
         else:
             print('specify a valid option')
 
