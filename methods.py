@@ -1,10 +1,12 @@
 import csv
-import tweepy
 import codecs
 
-tweets = []
-# keep track of all the VALID tweet ids, aka those that the user owns and not anyone else's
+import tweepy #external
 
+# keep track of the csv file in 2d list format
+tweets = []
+
+# keep track of all the VALID tweet ids, aka those that the user owns and not anyone else's
 all_tweet_ids = []
 # maps of ids and tweets both ways
 tweet_id_map = {}
@@ -118,7 +120,7 @@ def mark_by_keyword(keyword):
     # of tweets to delete
     count = 0
     for tweet in tweets:
-        if keyword in tweet[5]:
+        if keyword in tweet[5] and tweet[0] not in marked_tweets:
             marked_tweets.append(tweet[0])
             count += 1
     print('marked ' + str(count) + ' tweets')
@@ -130,12 +132,12 @@ def mark_retweets(userid=''):
     count = 0
     for tweet in tweets:
         if userid == '':
-            if tweet[5][0:3] == 'RT ':
+            if tweet[5][0:3] == 'RT ' and tweet[0] not in marked_tweets:
                 marked_tweets.append(tweet[0])
                 count += 1
         else:
             rtstring = 'RT @' + userid
-            if rtstring in tweet[5][0:]:
+            if rtstring in tweet[5][0:] and tweet[0] not in marked_tweets:
                 marked_tweets.append(tweet[0])
                 count += 1
     print('marked ' + str(count) + ' tweets')
@@ -150,7 +152,7 @@ def mark_by_hashtag(hashtag):
     # check every tweet in the archive and if it includes the specified hashtag, add it to the list
     # of tweets to delete
     for tweet in tweets:
-        if hashtag in tweet[5]:
+        if hashtag in tweet[5] and tweet[0] not in marked_tweets:
             marked_tweets.append(tweet[0])
             count += 1
     print('marked ' + str(count) + ' tweets')
@@ -163,12 +165,12 @@ def mark_replies(userid=''):
     count = 0
     for tweet in tweets:
         if userid == '':
-            if tweet[5][0] == '@':
+            if tweet[5][0] == '@' and tweet[0] not in marked_tweets:
                 marked_tweets.append(tweet[5])
                 count += 1
         else:
             mention = '@' + userid
-            if mention in tweet[5] and 'RT ' not in tweet[5][0:3]:
+            if mention in tweet[5] and 'RT ' not in tweet[5][0:3] and tweet[0] not in marked_tweets:
                 marked_tweets.append(tweet[0])
                 count += 1
     print('marked ' + str(count) + ' tweets')
@@ -180,7 +182,7 @@ def mark_by_yr_month(month_list):
     global marked_tweets
     count = 0
     for tweet in tweets:
-        if tweet[3][0:7] in month_list:
+        if tweet[3][0:7] in month_list and tweet[0] not in marked_tweets:
             marked_tweets.append(tweet[0])
             count += 1
     print('marked ' + str(count) + ' tweets')
@@ -190,11 +192,11 @@ def mark_by_yr_month(month_list):
 def mark_tweet_by_id(id):
     global marked_tweets
     global all_tweet_ids
-    if id in all_tweet_ids:
+    if id in all_tweet_ids and id not in marked_tweets:
         marked_tweets.append(id)
         print('marked tweet ' + str(id))
     else:
-        print('tweet id ' + str(id) + ' not valid. make sure you are the owner of the tweet/retweet')
+        print('tweet id ' + str(id) + ' not valid. make sure you are the owner of the tweet/retweet and that it is not already marked')
 
 
 # deletes every single marked tweet. however this requires authentication first
@@ -208,22 +210,27 @@ def delete_markeds():
         if not authenticated:
             authenticate()
         to_delete_ids = []
-        delete_count = 0
+        deleted_count = 0
+        count = 0
         # checks if a delete failed. it can be any one, not just all of them
         delete_failed = False
         for tweet in marked_tweets:
             to_delete_ids.append(tweet)
 
+        totaltweets = str(len(to_delete_ids))
+
         # delete marked tweets by status ID
         for status_id in to_delete_ids:
             try:
                 api.destroy_status(status_id)
-                print(status_id, 'deleted!')
-                delete_count += 1
+                deleted_count += 1
+                count += 1
+                print(status_id, 'deleted! ({}/{})'.format(count, totaltweets))
             except:
                 delete_failed = True
-                print(status_id, 'could not be deleted')
-        print(delete_count, 'tweets deleted')
+                count += 1
+                print(status_id, 'could not be deleted ({}/{})'.format(count, totaltweets))
+        print(deleted_count, 'tweets deleted')
         # clear the list of marked tweets
         marked_tweets.clear()
         print('list of marked tweets cleared')
@@ -272,6 +279,7 @@ def set_archive_path(path):
     if path != '':
         global archive_path
         archive_path = str(path)
+        print('set path to archive')
     else:
         print('you must specify a path')
 
@@ -345,4 +353,9 @@ def showinfo():
     try:
         print(api.rate_limit_status())
     except:
-        print('ruh-roh')
+        print('you are currently not authenticated. use $ edit and $ auth to authenticate before showing info')
+
+
+# output to the console how many tweets are marked for deletion
+def count_markeds():
+    print(str(len(marked_tweets)) + ' tweets marked for deletion')
