@@ -44,7 +44,7 @@ $ edit
 	-as		edit access_secret
 		-[k] - access_secret value
 ```
-The first thing we wil want to do here is configure our ```archive_path``` to point to wherever our .csv is stored so that we can load it.
+The first thing we will want to do here is configure our ```archive_path``` to point to wherever our .csv is stored so that we can load it.
 ```
 $ setpath /path/to/tweets.csv ↵
 set path to archive
