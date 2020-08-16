@@ -1,4 +1,4 @@
-# tweetdelete
+# tweetdelete (outdated)
 A command line tool that lets the user review and remove any of the tweets they've ever made. This is a solution to the Twitter API's limit of showing only the most recent 3,200 tweets.
 
 ## requirements
